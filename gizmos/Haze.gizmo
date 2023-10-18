@@ -1,0 +1,67 @@
+#! /media/falk/data/Apps/nuke/Nuke14.1v1-Beta.3/libnuke-14.1.1.so -nx
+version 14.1 v1.119767b
+Gizmo {
+ tile_color 0x3c74e1ff
+ addUserKnob {20 Haze}
+ addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T HazeKernel.useGPUIfAvailable}
+ addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T HazeKernel.vectorize}
+ addUserKnob {26 ""}
+ addUserKnob {41 in1 l "depth channel" T Shuffle1.in1}
+ addUserKnob {26 ""}
+ addUserKnob {41 HazeKernel_amount l amount T HazeKernel.HazeKernel_amount}
+ addUserKnob {41 HazeKernel_color l color T HazeKernel.HazeKernel_color}
+ addUserKnob {41 HazeKernel_near l near T HazeKernel.HazeKernel_near}
+ addUserKnob {41 HazeKernel_far l far T HazeKernel.HazeKernel_far}
+ addUserKnob {41 HazeKernel_gamma l gamma T HazeKernel.HazeKernel_gamma}
+ addUserKnob {26 ""}
+ addUserKnob {26 info l Info T "\n<b>10/2023 Falk Hofmann </b>\n\n"}
+}
+ Input {
+  inputs 0
+  name src
+  xpos -306
+  ypos -42
+ }
+ Dot {
+  name Dot1
+  xpos -272
+  ypos 26
+ }
+set Ncb7fef0 [stack 0]
+ Dot {
+  name Dot4
+  xpos -397
+  ypos 26
+ }
+ Shuffle2 {
+  fromInput1 {{0} B}
+  in1 depth
+  fromInput2 {{0} B}
+  mappings "4 black -1 -1 rgba.green 0 1 black -1 -1 rgba.blue 0 2 black -1 -1 rgba.alpha 0 3 depth.Z 0 0 rgba.red 0 0"
+  name Shuffle1
+  xpos -431
+  ypos 114
+ }
+push $Ncb7fef0
+ BlinkScript {
+  inputs 2
+  recompileCount 68
+  ProgramGroup 1
+  KernelDescription "3 \"HazeKernel\" iterate pixelWise edc9155762aa0f53bad04a6edb30bb974aeec6bd2e2715973292a07440355ce3 3 \"src\" Read Point \"depth\" Read Point \"dst\" Write Point 5 \"amount\" Float 1 AACAPw== \"color\" Float 4 AACAPwAAgD8AAIA/AACAPw== \"near\" Float 1 AAAgQQ== \"far\" Float 1 AADIQg== \"gamma\" Float 1 AACAPw== 5 \"_amount\" 1 1 Default \"_color\" 4 1 Default \"_near\" 1 1 Default \"_far\" 1 1 Default \"_gamma\" 1 1 Default 0"
+  kernelSource "\nkernel HazeKernel : ImageComputationKernel<ePixelWise>\n\{\n    Image<eRead, eAccessPoint, eEdgeClamped> src;\n    Image<eRead, eAccessPoint, eEdgeClamped> depth;\n    Image<eWrite> dst;\n\n    param:\n        float _amount;\n        float4 _color;\n        float _near;\n        float _far;\n        float _gamma;\n\n    void define() \{\n        defineParam(_amount, \"amount\", 1.0f);\n        defineParam(_color, \"color\", \{1.0f, 1.0f, 1.0f, 1.0f\});\n        defineParam(_near, \"near\", 10.0f);\n        defineParam(_far, \"far\", 100.0f);\n        defineParam(_gamma, \"gamma\", 1.0f);\n    \}\n\n    void init() \{\n    \}\n\n    void process() \{\n        // Read the input images\n        SampleType(src) _input = src();\n        SampleType(depth) _depth = depth();\n\n        float a = 1.0f/(_far - _near);\n        float b = a * -_near;\n        float c = pow(clamp(a * _depth.x + b, 0.0f, 1.0f), 1.0f/_gamma);\n\n        float am = clamp(_amount, 0.0f, 1.0f);\n\n        float4 unpremult (_input.x, _input.y, _input.z, _input.w);\n        if(_input.w != 0.0f)\{\n            unpremult = \{_input.x/_input.w, _input.y/_input.w, _input.z/_input.w, _input.w\};\n        \}\n\n        float4 hazed = \{unpremult.x * (1.0f - c) + (_color.x * c), \n                       unpremult.y * (1.0f - c) + (_color.y * c),\n                       unpremult.z * (1.0f - c) + (_color.z * c),\n                       unpremult.w\};\n        hazed = \{hazed.x * hazed.w, hazed.y * hazed.w, hazed.z * hazed.w, hazed.w\};\n\n        dst() = float4((hazed.x * am) + (_input.x * (1.0f - am)),\n                 (hazed.y * am) + (_input.y * (1.0f - am)),\n                 (hazed.z * am) + (_input.z * (1.0f - am)),\n                 _input.w\n                );\n    \}\n\};\n"
+  rebuild ""
+  HazeKernel_amount 0.1
+  HazeKernel_color 0.5
+  HazeKernel_near 0
+  rebuild_finalise ""
+  name HazeKernel
+  xpos -308
+  ypos 108
+ }
+ Output {
+  name Output1
+  selected true
+  xpos -308
+  ypos 220
+ }
+end_group
