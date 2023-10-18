@@ -1,7 +1,7 @@
 #! /media/falk/data/Apps/nuke/Nuke14.1v1-Beta.3/libnuke-14.1.1.so -nx
 version 14.1 v1.119767b
 Gizmo {
- tile_color 0x3c74e1ff
+ tile_color 0x4ee1dbff
  addUserKnob {20 Haze}
  addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T HazeKernel.useGPUIfAvailable}
  addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T HazeKernel.vectorize}
@@ -27,7 +27,7 @@ Gizmo {
   xpos -272
   ypos 26
  }
-set Ncb7fef0 [stack 0]
+set Nf869300 [stack 0]
  Dot {
   name Dot4
   xpos -397
@@ -42,7 +42,7 @@ set Ncb7fef0 [stack 0]
   xpos -431
   ypos 114
  }
-push $Ncb7fef0
+push $Nf869300
  BlinkScript {
   inputs 2
   recompileCount 68

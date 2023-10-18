@@ -1,6 +1,6 @@
 import nuke
 
-NODES = ["Haze"]
+NODES = ["Haze", "IterationRolloff"]
 
 
 
