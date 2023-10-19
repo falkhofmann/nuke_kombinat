@@ -13,8 +13,12 @@ Gizmo {
  addUserKnob {41 HazeKernel_near l near t "Distance to start haze." T HazeKernel.HazeKernel_near}
  addUserKnob {41 HazeKernel_far l far t "Distance to apply maximum haze." T HazeKernel.HazeKernel_far}
  addUserKnob {41 HazeKernel_gamma l gamma t "Function to modify the linear falloff." T HazeKernel.HazeKernel_gamma}
- addUserKnob {26 ""}
- addUserKnob {26 info l Info T "<br><b>10/2023 Falk Hofmann</b><br>\n<b>www.kombinat-13b.de</b>\n\n\n"}
+ addUserKnob {20 Info_tab l Info}
+ addUserKnob {26 tool +STARTLINE T "<b>Haze</b>"}
+ addUserKnob {26 version +STARTLINE T "<b>0.0.1</b>"}
+ addUserKnob {26 date +STARTLINE T "<b>10/2023</b>"}
+ addUserKnob {26 author +STARTLINE T "<b>Falk Hofmann</b>"}
+ addUserKnob {26 web +STARTLINE T "<b>www.kombinat-13b.de</b>"}
 }
  Input {
   inputs 0
