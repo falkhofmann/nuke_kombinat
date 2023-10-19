@@ -8,13 +8,13 @@ Gizmo {
  addUserKnob {26 ""}
  addUserKnob {41 in1 l "depth channel" T Shuffle1.in1}
  addUserKnob {26 ""}
- addUserKnob {41 HazeKernel_amount l amount T HazeKernel.HazeKernel_amount}
- addUserKnob {41 HazeKernel_color l color T HazeKernel.HazeKernel_color}
- addUserKnob {41 HazeKernel_near l near T HazeKernel.HazeKernel_near}
- addUserKnob {41 HazeKernel_far l far T HazeKernel.HazeKernel_far}
- addUserKnob {41 HazeKernel_gamma l gamma T HazeKernel.HazeKernel_gamma}
+ addUserKnob {41 HazeKernel_amount l amount t "Overall amount of haze." T HazeKernel.HazeKernel_amount}
+ addUserKnob {41 HazeKernel_color l color t "Overall color of the applied haze." T HazeKernel.HazeKernel_color}
+ addUserKnob {41 HazeKernel_near l near t "Distance to start haze." T HazeKernel.HazeKernel_near}
+ addUserKnob {41 HazeKernel_far l far t "Distance to apply maximum haze." T HazeKernel.HazeKernel_far}
+ addUserKnob {41 HazeKernel_gamma l gamma t "Function to modify the linear falloff." T HazeKernel.HazeKernel_gamma}
  addUserKnob {26 ""}
- addUserKnob {26 info l Info T "\n<b>10/2023 Falk Hofmann </b>\n\n"}
+ addUserKnob {26 info l Info T "<br><b>10/2023 Falk Hofmann</b><br>\n<b>www.kombinat-13b.de</b>\n\n\n"}
 }
  Input {
   inputs 0
@@ -27,7 +27,7 @@ Gizmo {
   xpos -272
   ypos 26
  }
-set Nf869300 [stack 0]
+set Ne61c930 [stack 0]
  Dot {
   name Dot4
   xpos -397
@@ -42,7 +42,7 @@ set Nf869300 [stack 0]
   xpos -431
   ypos 114
  }
-push $Nf869300
+push $Ne61c930
  BlinkScript {
   inputs 2
   recompileCount 68

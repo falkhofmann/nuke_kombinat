@@ -6,12 +6,12 @@ Gizmo {
  addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T BlinkScript1.useGPUIfAvailable}
  addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T BlinkScript1.vectorize}
  addUserKnob {26 kernel_knob_group l "" +STARTLINE}
- addUserKnob {4 luma_model l "Luminance model" M {"Rec 709" "Ccir 601" Average Maximum "" "" ""}}
- addUserKnob {41 IterationKernel_iteration l iteration T BlinkScript1.IterationKernel_iteration}
+ addUserKnob {4 luma_model l "Luminance model" t "Model to extract the luma mask." M {"Rec 709" "Ccir 601" Average Maximum "" "" "" ""}}
+ addUserKnob {41 IterationKernel_iteration l iteration t "Amount of key/grade iterations to applyon source." T BlinkScript1.IterationKernel_iteration}
  addUserKnob {41 "IterationKernel_max luma value" l "max luma value" T "BlinkScript1.IterationKernel_max luma value"}
- addUserKnob {41 "IterationKernel_grade value" l "grade value" T "BlinkScript1.IterationKernel_grade value"}
- addUserKnob {26 "" +STARTLINE}
- addUserKnob {26 info l Info T "\n<b>10/2023 Falk Hofmann</b>"}
+ addUserKnob {41 "IterationKernel_multiply value" l "multiply value" T "BlinkScript1.IterationKernel_multiply value"}
+ addUserKnob {26 ""}
+ addUserKnob {26 info l Info T "<br><b>10/2023 Falk Hofmann</b><br>\n<b>www.kombinat-13b.de</b>\n\n\n"}
 }
  Input {
   inputs 0
@@ -20,18 +20,16 @@ Gizmo {
   ypos 179
  }
  BlinkScript {
-  kernelSourceFile /mnt/data/vfx/dev/blink_rolloff/blink_rolloff_v001.cpp
-  recompileCount 71
+  recompileCount 74
   ProgramGroup 1
-  KernelDescription "3 \"IterationKernel\" iterate pixelWise 4d59a63a703adf1d901c81197d595a192fe338e0eac8e6a24c0f9bf90920ce73 2 \"src\" Read Point \"dst\" Write Point 4 \"iteration\" Int 1 AgAAAA== \"max luma value\" Float 1 AAAgQQ== \"grade value\" Float 1 AAAAPw== \"Luminance Model\" Int 1 AAAAAA== 4 \"_iteration\" 1 1 Default \"_max_value\" 1 1 Default \"_grade_value\" 1 1 Default \"_luma_model\" 1 1 Default 0"
-  kernelSource "\nkernel IterationKernel : ImageComputationKernel<ePixelWise>\n\{\n    Image<eRead, eAccessPoint, eEdgeClamped> src;\n    Image<eWrite> dst;\n    param:\n        int _iteration;\n        float _max_value;\n        float _grade_value;\n        int _luma_model;\n\n    void define() \{\n        defineParam(_iteration, \"iteration\", 2);\n        defineParam(_max_value, \"max luma value\", 10.0f);\n        defineParam(_grade_value, \"grade value\", 0.5f);\n        defineParam(_luma_model, \"Luminance Model\", 0);\n    \}\n\n    static inline float y_convert_rec709(float r, float g, float b)\{\n        return r * 0.2126f + g * 0.7152f + b * 0.0722f;\n    \}\n\n    static inline float y_convert_ccir601(float r, float g, float b)\{\n        return r * 0.299f + g * 0.587f + b * 0.114f;\n    \}\n\n    static inline float y_convert_avg(float r, float g, float b)\{\n        return (r + g + b) / 3.0f;\n    \}\n\n    static inline float y_convert_max(float r, float g, float b)\{\n        if (g > r)\n            r = g;\n        if (b > r)\n            r = b;\n        return r;\n    \}\n\n    void process(int2 pos) \{\n    SampleType(src) _input = src();\n\n    float3 tmpPixel(_input.x, _input.y, _input.z);\n    float luma = 1.0f;\n\n    for(int i = 0; i <= _iteration; i++)\{\n\n        if (_luma_model == 0)\{\n            luma = y_convert_rec709(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 1)\{\n            luma = y_convert_ccir601(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 2)\{\n            luma = y_convert_avg(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 3)\{\n            luma = y_convert_max(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}\n\n        float luma_mask = clamp(luma/_max_value, 0.0f, 1.0f);\n        tmpPixel = ((tmpPixel * _grade_value) * luma_mask) + ((1.0f - luma_mask) * tmpPixel);\n    \}\n\n    dst() = float4(tmpPixel.x, tmpPixel.y, tmpPixel.z, _input.w);\n    \}\n\};\n"
+  KernelDescription "3 \"IterationKernel\" iterate pixelWise 716f392334a4825e48d54157003d40faccd6629f7b5a16d2cc3ea0f9bdb9fd3b 2 \"src\" Read Point \"dst\" Write Point 4 \"iteration\" Int 1 AgAAAA== \"max luma value\" Float 1 AAAgQQ== \"multiply value\" Float 1 AAAAPw== \"Luminance Model\" Int 1 AAAAAA== 4 \"_iteration\" 1 1 Default \"_max_value\" 1 1 Default \"_multiply_value\" 1 1 Default \"_luma_model\" 1 1 Default 0"
+  kernelSource "\nkernel IterationKernel : ImageComputationKernel<ePixelWise>\n\{\n    Image<eRead, eAccessPoint, eEdgeClamped> src;\n    Image<eWrite> dst;\n    param:\n        int _iteration;\n        float _max_value;\n        float _multiply_value;\n        int _luma_model;\n\n    void define() \{\n        defineParam(_iteration, \"iteration\", 2);\n        defineParam(_max_value, \"max luma value\", 10.0f);\n        defineParam(_multiply_value, \"multiply value\", 0.5f);\n        defineParam(_luma_model, \"Luminance Model\", 0);\n    \}\n\n    static inline float y_convert_rec709(float r, float g, float b)\{\n        return r * 0.2126f + g * 0.7152f + b * 0.0722f;\n    \}\n\n    static inline float y_convert_ccir601(float r, float g, float b)\{\n        return r * 0.299f + g * 0.587f + b * 0.114f;\n    \}\n\n    static inline float y_convert_avg(float r, float g, float b)\{\n        return (r + g + b) / 3.0f;\n    \}\n\n    static inline float y_convert_max(float r, float g, float b)\{\n        if (g > r)\n            r = g;\n        if (b > r)\n            r = b;\n        return r;\n    \}\n\n    void process(int2 pos) \{\n    SampleType(src) _input = src();\n\n    float3 tmpPixel(_input.x, _input.y, _input.z);\n    float luma = 1.0f;\n\n    for(int i = 0; i <= _iteration; i++)\{\n\n        if (_luma_model == 0)\{\n            luma = y_convert_rec709(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 1)\{\n            luma = y_convert_ccir601(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 2)\{\n            luma = y_convert_avg(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 3)\{\n            luma = y_convert_max(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}\n\n        float luma_mask = clamp(luma/_max_value, 0.0f, 1.0f);\n        tmpPixel = ((tmpPixel * _multiply_value) * luma_mask) + ((1.0f - luma_mask) * tmpPixel);\n    \}\n\n    dst() = float4(tmpPixel.x, tmpPixel.y, tmpPixel.z, _input.w);\n    \}\n\};\n"
   rebuild ""
-  IterationKernel_iteration 15
-  "IterationKernel_max luma value" 9.7
-  "IterationKernel_grade value" 0.556
+  IterationKernel_iteration 10
   "IterationKernel_Luminance Model" {{parent.luma_model}}
   rebuild_finalise ""
   name BlinkScript1
+  selected true
   xpos 64
   ypos 219
  }
