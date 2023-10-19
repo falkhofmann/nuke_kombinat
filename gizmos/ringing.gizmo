@@ -1,0 +1,46 @@
+#! /media/falk/data/Apps/nuke/Nuke14.1v1-Beta.3/libnuke-14.1.1.so -nx
+version 14.1 v1.119767b
+Gizmo {
+ inputs 0
+ tile_color 0x4ee1dbff
+ addUserKnob {20 User l Ringing}
+ addUserKnob {41 RingKernel_center l center T BlinkScript9.RingKernel_center}
+ addUserKnob {41 RingKernel_size l size T BlinkScript9.RingKernel_size}
+ addUserKnob {26 ""}
+ addUserKnob {41 format T Constant2.format}
+ addUserKnob {20 Info_tab l Info}
+ addUserKnob {26 tool T <b>ringing</b>}
+ addUserKnob {26 version T <b>0.0.1</b>}
+ addUserKnob {26 date T <b>10/2023</b>}
+ addUserKnob {26 author T "<b>Falk Hofmann</b>"}
+ addUserKnob {26 web T <b>www.kombinat-13b.de</b>}
+}
+ Constant {
+  inputs 0
+  format "2048 2048 0 0 2048 2048 1 square_2k"
+  name Constant2
+  xpos 208
+  ypos 669
+  postage_stamp false
+ }
+ BlinkScript {
+  recompileCount 85
+  ProgramGroup 1
+  KernelDescription "2 \"RingKernel\" iterate pixelWise 345af90b23626a2c0db81081e8ff5eac8e3a34e0926192a62068ee1532bfc47e 2 \"src\" Read Point \"dst\" Write Point 2 \"center\" Float 2 AAD6QwAA+kM= \"size\" Float 1 AACAPw== 2 \"center\" 2 1 \"size\" 1 1 0"
+  kernelSource "kernel RingKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float2 center;\n  float size;\n\nvoid define()\{\n  defineParam(center, \"center\", float2(500,500));\n  defineParam(size, \"size\", float (1));\n\}\n  void process(int2 pos) \{\n    \n    int2 res;\n    res.x = src.bounds.x2;  \n    res.y = src.bounds.y2;\n    float ring;\n    ring = sin(sqrt((pos.x-center.x)*(pos.x-center.x) + (pos.y-center.y)*(pos.y-center.y))/size);\n    dst() = float4(ring, 0.f, 0.f, 0.f);\n  \}\n\};\n"
+  rebuild ""
+  channels rgb
+  RingKernel_center {1024 1024}
+  RingKernel_size 10
+  rebuild_finalise ""
+  name BlinkScript9
+  selected true
+  xpos 208
+  ypos 706
+ }
+ Output {
+  name Output1
+  xpos 208
+  ypos 759
+ }
+end_group
