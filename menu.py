@@ -5,11 +5,13 @@ NODES = ["Haze", "IterationRolloff"]
 
 
 def add_nodes_to_menu():
-    toolbar = nuke.menu("Nodes")
-    nodes = toolbar.addMenu("fhofmann/nodes")
+    for menu in ["Nuke", "Nodes"]:
+        nuke_menu = nuke.menu(menu)
+        kombinat = nuke_menu.addMenu("nuke_kombinat")
+        kombinat_nodes = kombinat.addMenu("Nodes")
 
-    for node in NODES:
-        nodes.addCommand(node, "nuke.createNode('{}')".format(node))
+        for node in NODES:
+            kombinat_nodes.addCommand(node, "nuke.createNode('{}')".format(node))
 
 
 
