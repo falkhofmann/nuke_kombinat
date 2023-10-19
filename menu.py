@@ -1,7 +1,7 @@
 import nuke
 
 GENERATORS = ["lines", "radialGradient", "radialRays", "ringing"]
-UTILS = ["Haze", "IterationRolloff"]
+MODIFIERS = ["Haze", "IterationRolloff", "Vibrant"]
 
 
 def add_nodes_to_menu():
@@ -10,13 +10,13 @@ def add_nodes_to_menu():
         kombinat = nuke_menu.addMenu("nuke_kombinat")
         kombinat_nodes = kombinat.addMenu("Nodes")
         kombinat_generators = kombinat_nodes.addMenu("generators")
-        kombinat_utils = kombinat_nodes.addMenu("utils")
+        kombinat_modifiers = kombinat_nodes.addMenu("MODIFIERS")
 
         for node in GENERATORS:
             kombinat_generators.addCommand(node, "nuke.createNode('{}')".format(node))
 
-        for node in UTILS:
-            kombinat_utils.addCommand(node, "nuke.createNode('{}')".format(node))
+        for node in MODIFIERS:
+            kombinat_modifiers.addCommand(node, "nuke.createNode('{}')".format(node))
 
 
 add_nodes_to_menu()
