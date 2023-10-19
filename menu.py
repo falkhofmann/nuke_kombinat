@@ -1,7 +1,7 @@
 import nuke
 
 UTILS = ["Haze", "IterationRolloff"]
-GENERATORS = ["radialGradient"]
+GENERATORS = ["radialGradient", "radialRays", "ringing"]
 
 
 
