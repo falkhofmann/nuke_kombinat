@@ -58,11 +58,11 @@ Gizmo {
  BlinkScript {
   recompileCount 67
   ProgramGroup 1
-  KernelDescription "2 \"RadialGradienKernel\" iterate pixelWise 08db1ea5eceb6d4e45fa576fe09188d618934bbe04d7e14b000479be96a41b09 2 \"src\" Read Point \"dst\" Write Point 1 \"center\" Float 2 AAD6QwAA+kM= 1 \"center\" 2 1 0"
-  kernelSource "kernel RadialGradienKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float2 center;\n  void define()\{\n  defineParam(center, \"center\", float2(500,500));\n\}\n  void process(int2 pos) \{\n    \n    int2 res;\n    res.x = src.bounds.x2;  \n    res.y = src.bounds.y2;\n\n    float4 hans;\n    hans.x = 0.5+(atan2(pos.x-center.x, pos.y-center.y)/(PI*2));\n\n    dst() = float4(hans.x, 0.f, 0.f, 0.f);\n  \}\n\};\n"
+  KernelDescription "2 \"RadialGradientKernel\" iterate pixelWise 08db1ea5eceb6d4e45fa576fe09188d618934bbe04d7e14b000479be96a41b09 2 \"src\" Read Point \"dst\" Write Point 1 \"center\" Float 2 AAD6QwAA+kM= 1 \"center\" 2 1 0"
+  kernelSource "kernel RadialGradientKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float2 center;\n  void define()\{\n  defineParam(center, \"center\", float2(500,500));\n\}\n  void process(int2 pos) \{\n    \n    int2 res;\n    res.x = src.bounds.x2;  \n    res.y = src.bounds.y2;\n\n    float4 hans;\n    hans.x = 0.5+(atan2(pos.x-center.x, pos.y-center.y)/(PI*2));\n\n    dst() = float4(hans.x, 0.f, 0.f, 0.f);\n  \}\n\};\n"
   rebuild ""
   channels rgb
-  RadialGradienKernel_center {{parent.Transform1.center} {parent.Transform1.center}}
+  RadialGradientKernel_center {{parent.Transform1.center} {parent.Transform1.center}}
   rebuild_finalise ""
   name BlinkScript9
   xpos 444

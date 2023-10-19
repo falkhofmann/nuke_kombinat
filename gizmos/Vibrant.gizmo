@@ -3,15 +3,17 @@ version 14.1 v1.119767b
 Gizmo {
  tile_color 0x4ee1dbff
  addUserKnob {20 Vibrant}
-+STARTLINE
+ addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T BlinkScript1.useGPUIfAvailable}
+ addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T BlinkScript1.vectorize}
+ addUserKnob {26 "" +STARTLINE}
  addUserKnob {4 luma_model l "luminance model" M {"Rec 709" "Ccir 601" Average Maximum "" "" ""}}
- addUserKnob {41 IterationKernel_vibrancy l vibrancy T BlinkScript1.IterationKernel_vibrancy}
+ addUserKnob {41 VibrantKernel_vibrancy l vibrancy T BlinkScript1.VibrantKernel_vibrancy}
  addUserKnob {20 Info_tab l Info}
- addUserKnob {26 tool -STARTLINE T <b>Vibrant</b>}
- addUserKnob {26 version -STARTLINE T <b>0.0.1</b>}
- addUserKnob {26 date -STARTLINE T <b>10/2023</b>}
- addUserKnob {26 author -STARTLINE T "<b>Falk Hofmann</b>"}
- addUserKnob {26 web -STARTLINE T <b>www.kombinat-13b.de</b>}
+ addUserKnob {26 tool +STARTLINE T <b>Vibrant</b>}
+ addUserKnob {26 version +STARTLINE T <b>0.0.1</b>}
+ addUserKnob {26 date +STARTLINE T <b>10/2023</b>}
+ addUserKnob {26 author +STARTLINE T "<b>Falk Hofmann</b>"}
+ addUserKnob {26 web +STARTLINE T <b>www.kombinat-13b.de</b>}
 }
  Input {
   inputs 0
@@ -20,14 +22,13 @@ Gizmo {
   ypos -295
  }
  BlinkScript {
-  kernelSourceFile /media/falk/data/vfx/projects/nuke_kombinat/dev_files/vibrant.blink
   recompileCount 15
   ProgramGroup 1
-  KernelDescription "3 \"IterationKernel\" iterate pixelWise 10969fd92fcb5f6e6329e54e18054443e81459d7a3d452b185dd1fe5bf65eef2 2 \"src\" Read Point \"dst\" Write Point 2 \"vibrancy\" Float 1 AACAPw== \"Luminance Model\" Int 1 AAAAAA== 2 \"vibrancy\" 1 1 Default \"_luma_model\" 1 1 Default 0"
-  kernelSource "\nkernel IterationKernel : ImageComputationKernel<ePixelWise>\n\{\n    Image<eRead, eAccessPoint, eEdgeClamped> src;\n    Image<eWrite> dst;\n    param:\n        float vibrancy;\n        int _luma_model;\n\n    void define() \{\n        defineParam(vibrancy, \"vibrancy\", 1.0f);\n        defineParam(_luma_model, \"Luminance Model\", 0);\n    \}\n\n    static inline float y_convert_rec709(float r, float g, float b)\{\n        return r * 0.2126f + g * 0.7152f + b * 0.0722f;\n    \}\n\n    static inline float y_convert_ccir601(float r, float g, float b)\{\n        return r * 0.299f + g * 0.587f + b * 0.114f;\n    \}\n\n    static inline float y_convert_avg(float r, float g, float b)\{\n        return (r + g + b) / 3.0f;\n    \}\n\n    static inline float y_convert_max(float r, float g, float b)\{\n        if (g > r)\n            r = g;\n        if (b > r)\n            r = b;\n        return r;\n    \}\n    \n    static inline float y_convert_min(float r, float g, float b)\{\n        if (g < r)\n            r = g;\n        if (b < r)\n            r = b;\n        return r;\n    \}\n\n    static inline float calc_mask(float r, float g, float b)\{\n        float mn = y_convert_min(r, g, b);\n        float mx = y_convert_max(r, g, b);\n        float t = clamp(1 - (max(mx, 1 - (mx - mn))), 0.0f, 1.0f);\n        return t;\n    \}\n\n    static inline float lerp(float y, float cIn, float vib)\{\n        return (y + (cIn - y) * vib); \n    \}\n    static inline float calc_value(float y, float cIn, float vib, float m)\{\n        return (lerp(y, cIn, vib) * m) + ((1 - m) * cIn);\n    \}\n\n    void process(int2 pos) \{\n        SampleType(src) _input = src();\n\n        float3 tmpPixel(_input.x, _input.y, _input.z);\n        float luma = 1.0f;\n\n        if (_luma_model == 0)\{\n            luma = y_convert_rec709(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 1)\{\n            luma = y_convert_ccir601(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 2)\{\n            luma = y_convert_avg(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 3)\{\n            luma = y_convert_max(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}\n\n        float mask = calc_mask(_input.x, _input.y, _input.z);\n        float red = calc_value(luma, _input.x, vibrancy, mask);\n        float green = calc_value(luma, _input.y, vibrancy, mask );\n        float blue = calc_value(luma, _input.z, vibrancy, mask );\n\n\n        dst() = float4(red, green, blue, _input.w);\n    \}\n\};\n"
+  KernelDescription "3 \"VibrantKernel\" iterate pixelWise 10969fd92fcb5f6e6329e54e18054443e81459d7a3d452b185dd1fe5bf65eef2 2 \"src\" Read Point \"dst\" Write Point 2 \"vibrancy\" Float 1 AACAPw== \"Luminance Model\" Int 1 AAAAAA== 2 \"vibrancy\" 1 1 Default \"_luma_model\" 1 1 Default 0"
+  kernelSource "\nkernel VibrantKernel : ImageComputationKernel<ePixelWise>\n\{\n    Image<eRead, eAccessPoint, eEdgeClamped> src;\n    Image<eWrite> dst;\n    param:\n        float vibrancy;\n        int _luma_model;\n\n    void define() \{\n        defineParam(vibrancy, \"vibrancy\", 1.0f);\n        defineParam(_luma_model, \"Luminance Model\", 0);\n    \}\n\n    static inline float y_convert_rec709(float r, float g, float b)\{\n        return r * 0.2126f + g * 0.7152f + b * 0.0722f;\n    \}\n\n    static inline float y_convert_ccir601(float r, float g, float b)\{\n        return r * 0.299f + g * 0.587f + b * 0.114f;\n    \}\n\n    static inline float y_convert_avg(float r, float g, float b)\{\n        return (r + g + b) / 3.0f;\n    \}\n\n    static inline float y_convert_max(float r, float g, float b)\{\n        if (g > r)\n            r = g;\n        if (b > r)\n            r = b;\n        return r;\n    \}\n    \n    static inline float y_convert_min(float r, float g, float b)\{\n        if (g < r)\n            r = g;\n        if (b < r)\n            r = b;\n        return r;\n    \}\n\n    static inline float calc_mask(float r, float g, float b)\{\n        float mn = y_convert_min(r, g, b);\n        float mx = y_convert_max(r, g, b);\n        float t = clamp(1 - (max(mx, 1 - (mx - mn))), 0.0f, 1.0f);\n        return t;\n    \}\n\n    static inline float lerp(float y, float cIn, float vib)\{\n        return (y + (cIn - y) * vib); \n    \}\n    static inline float calc_value(float y, float cIn, float vib, float m)\{\n        return (lerp(y, cIn, vib) * m) + ((1 - m) * cIn);\n    \}\n\n    void process(int2 pos) \{\n        SampleType(src) _input = src();\n\n        float3 tmpPixel(_input.x, _input.y, _input.z);\n        float luma = 1.0f;\n\n        if (_luma_model == 0)\{\n            luma = y_convert_rec709(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 1)\{\n            luma = y_convert_ccir601(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 2)\{\n            luma = y_convert_avg(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}else if(_luma_model == 3)\{\n            luma = y_convert_max(tmpPixel.x, tmpPixel.y, tmpPixel.z);\n        \}\n\n        float mask = calc_mask(_input.x, _input.y, _input.z);\n        float red = calc_value(luma, _input.x, vibrancy, mask);\n        float green = calc_value(luma, _input.y, vibrancy, mask );\n        float blue = calc_value(luma, _input.z, vibrancy, mask );\n\n\n        dst() = float4(red, green, blue, _input.w);\n    \}\n\};\n"
   rebuild ""
-  IterationKernel_vibrancy {1}
-  "IterationKernel_Luminance Model" {{parent.luma_model}}
+  VibrantKernel_vibrancy {1}
+  "VibrantKernel_Luminance Model" {{parent.luma_model}}
   rebuild_finalise ""
   name BlinkScript1
   xpos -716

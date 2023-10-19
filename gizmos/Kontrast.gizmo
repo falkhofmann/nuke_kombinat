@@ -1,0 +1,40 @@
+#! /media/falk/data/Apps/nuke/Nuke14.1v1-Beta.3/libnuke-14.1.1.so -nx
+version 14.1 v1.119767b
+Gizmo {
+ tile_color 0x4ee1dbff
+ addUserKnob {20 Kontrast}
+ addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T BlinkScript7.useGPUIfAvailable}
+ addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T BlinkScript7.vectorize}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {41 KontrastKernel_pivot l pivot T BlinkScript7.KontrastKernel_pivot}
+ addUserKnob {41 KontrastKernel_value l value T BlinkScript7.KontrastKernel_value}
+ addUserKnob {20 Info_tab l Info}
+ addUserKnob {26 tool +STARTLINE T <b>Kontrast</b>}
+ addUserKnob {26 version +STARTLINE T <b>0.0.1</b>}
+ addUserKnob {26 date +STARTLINE T <b>10/2023</b>}
+ addUserKnob {26 author +STARTLINE T "<b>Falk Hofmann</b>"}
+ addUserKnob {26 web +STARTLINE T <b>www.kombinat-13b.de</b>}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -142
+  ypos 184
+ }
+ BlinkScript {
+  recompileCount 6
+  ProgramGroup 1
+  KernelDescription "3 \"KontrastKernel\" iterate pixelWise 3eca3157b8f17b64c6f5b45ceb3f81e77106c79cbdb69fea383cc11847498e01 2 \"src\" Read Point \"dst\" Write Point 2 \"pivot\" Float 1 7FE4Pg== \"value\" Float 4 AACAPwAAgD8AAIA/AACAPw== 2 \"_pivot\" 1 1 Default \"_value\" 4 1 Default 0"
+  kernelSource "\nkernel KontrastKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\n  param:\n    float _pivot;\n    float4 _value;\n\n  void define() \{\n    defineParam(_pivot, \"pivot\", 0.18f);\n    defineParam(_value, \"value\", \{1.0f, 1.0f, 1.0f, 1.0f\});\n  \}\n\n\n  void process() \{\n    SampleType(src) input = src();\n\n    float3 srcPixel(input.x, input.y, input.z);\n\n    float red = pow(input.x/_pivot, _value.x) * _pivot;\n    float green = pow(input.y/_pivot, _value.y) * _pivot;\n    float blue = pow(input.z/_pivot, _value.z) * _pivot;\n\n\n\n    dst() = float4(red, green, blue, input.w);\n  \}\n\};\n"
+  rebuild ""
+  rebuild_finalise ""
+  name BlinkScript7
+  xpos -142
+  ypos 224
+ }
+ Output {
+  name Output1
+  xpos -142
+  ypos 324
+ }
+end_group

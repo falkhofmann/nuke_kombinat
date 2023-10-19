@@ -12,11 +12,11 @@ Gizmo {
  addUserKnob {26 ""}
  addUserKnob {41 format T Constant2.format}
  addUserKnob {20 Info_tab l Info}
- addUserKnob {26 tool T <b>ringing</b>}
- addUserKnob {26 version T <b>0.0.1</b>}
- addUserKnob {26 date T <b>10/2023</b>}
- addUserKnob {26 author T "<b>Falk Hofmann</b>"}
- addUserKnob {26 web T <b>www.kombinat-13b.de</b>}
+ addUserKnob {26 tool +STARTLINE T <b>ringing</b>}
+ addUserKnob {26 version +STARTLINE T <b>0.0.1</b>}
+ addUserKnob {26 date +STARTLINE T <b>10/2023</b>}
+ addUserKnob {26 author +STARTLINE T "<b>Falk Hofmann</b>"}
+ addUserKnob {26 web +STARTLINE T <b>www.kombinat-13b.de</b>}
 }
  Constant {
   inputs 0
