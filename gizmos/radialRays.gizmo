@@ -4,6 +4,9 @@ Gizmo {
  inputs 0
  tile_color 0x4ee1dbff
  addUserKnob {20 User l "radial Rays"}
+ addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T BlinkScript9.useGPUIfAvailable}
+ addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T BlinkScript9.vectorize}
+ addUserKnob {26 "" +STARTLINE}
  addUserKnob {12 center}
  center {1024 1024}
  addUserKnob {7 amount R 1 50}

@@ -4,6 +4,9 @@ Gizmo {
  inputs 0
  tile_color 0x4ee1dbff
  addUserKnob {20 User l lines}
+ addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T BlinkScript9.useGPUIfAvailable}
+ addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T BlinkScript9.vectorize}
+ addUserKnob {26 ""}
  addUserKnob {7 size R 1 50}
  size 10
  addUserKnob {7 offset R -100 100}
@@ -41,7 +44,7 @@ Gizmo {
  }
  Transform {
   rotate {{parent.rotation}}
-  center {{parent.center} {parent.center}}
+  center {{width/2} {height/2}}
   shutteroffset centred
   name Transform1
   xpos 444
@@ -73,11 +76,12 @@ Gizmo {
   invert_matrix true
   shutteroffset centred
   name Transform2
+  selected true
   xpos 444
   ypos 785
  }
  Crop {
-  box {{0} {0} {_format.width} {_format.height}}
+  box {0 0 {_format.width} {_format.height}}
   reformat true
   crop false
   name Crop5
