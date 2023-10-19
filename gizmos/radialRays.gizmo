@@ -1,0 +1,93 @@
+#! /media/falk/data/Apps/nuke/Nuke14.1v1-Beta.3/libnuke-14.1.1.so -nx
+version 14.1 v1.119767b
+Gizmo {
+ inputs 0
+ tile_color 0x4ee1dbff
+ addUserKnob {20 User l "radial Rays"}
+ addUserKnob {12 center}
+ center {1024 1024}
+ addUserKnob {7 amount R 1 50}
+ amount 8
+ addUserKnob {7 rotation R -180 180}
+ addUserKnob {26 ""}
+ addUserKnob {41 format l "output format" T _format.format}
+ addUserKnob {6 crop l "crop output" +STARTLINE}
+ crop true
+ addUserKnob {20 Info_tab l Info}
+ addUserKnob {26 tool T <b>radialRays</b>}
+ addUserKnob {26 version T <b>0.0.1</b>}
+ addUserKnob {26 date T <b>10/2023</b>}
+ addUserKnob {26 author T "<b>Falk Hofmann</b>"}
+ addUserKnob {26 web T <b>www.kombinat-13b.de</b>}
+}
+ Constant {
+  inputs 0
+  format "2048 1024 0 0 2048 1024 1 2K_LatLong"
+  name Constant2
+  xpos 445
+  ypos 560
+  postage_stamp false
+ }
+ Reformat {
+  format "2048 2048 0 0 2048 2048 1 square_2k"
+  name _format
+  xpos 444
+  ypos 591
+ }
+ Crop {
+  box {{curve} {curve} {width} {height}}
+  name Crop1
+  xpos 444
+  ypos 629
+ }
+ Transform {
+  rotate {{parent.rotation}}
+  center {{parent.center} {parent.center}}
+  shutteroffset centred
+  name Transform1
+  xpos 444
+  ypos 655
+ }
+ Crop {
+  box {{bbox.x} {bbox.y} {bbox.r} {bbox.t}}
+  name Crop4
+  xpos 442
+  ypos 684
+ }
+ BlinkScript {
+  recompileCount 71
+  ProgramGroup 1
+  KernelDescription "3 \"RadialGradienKernel\" iterate pixelWise 0cd32020d12c55b6e9507d926391512755dd8852de39c8679ea1e7f7728ac033 2 \"src\" Read Point \"dst\" Write Point 2 \"center\" Float 2 AACARAAAgEQ= \"amount\" Float 1 AAD6Qw== 2 \"center\" 2 1 Default \"amount\" 1 1 Default 0"
+  kernelSource "kernel RadialGradienKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float2 center;\n  float amount;\n\n  void define()\{\n  defineParam(center, \"center\", float2(1024,1024));\n  defineParam(amount, \"amount\", float(500));\n\}\n  void process(int2 pos) \{\n    \n    int2 res;\n    res.x = src.bounds.x2;  \n    res.y = src.bounds.y2;\n\n    float rays;\n    rays = sin( atan2(pos.x - center.x, pos.y - center.y) * amount);\n\n    dst() = float4(rays, 0.f, 0.f, 0.f);\n  \}\n\};\n"
+  rebuild ""
+  channels rgb
+  RadialGradienKernel_center {{parent.Transform1.center} {parent.Transform1.center}}
+  RadialGradienKernel_amount 10
+  rebuild_finalise ""
+  name BlinkScript9
+  selected true
+  xpos 442
+  ypos 718
+ }
+ Transform {
+  rotate {{parent.Transform1.rotate}}
+  center {{parent.Transform1.center} {parent.Transform1.center}}
+  invert_matrix true
+  shutteroffset centred
+  name Transform2
+  xpos 442
+  ypos 756
+ }
+ Crop {
+  box {{0} {0} {_format.width} {_format.height}}
+  name Crop5
+  xpos 442
+  ypos 792
+  disable {{!parent.crop}}
+ }
+ Output {
+  name Output1
+  xpos 442
+  ypos 827
+ }
+end_group
