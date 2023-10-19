@@ -3,7 +3,7 @@ version 14.1 v1.119767b
 Gizmo {
  inputs 0
  tile_color 0x4ee1dbff
- addUserKnob {20 User l Ringing}
+ addUserKnob {20 User l ringing}
  addUserKnob {41 RingKernel_center l center T BlinkScript9.RingKernel_center}
  addUserKnob {41 RingKernel_size l size T BlinkScript9.RingKernel_size}
  addUserKnob {26 ""}
