@@ -1,7 +1,7 @@
 import nuke
 
 GENERATORS = ["lines", "radialGradient", "radialRays", "ringing"]
-MODIFIERS = ["Haze", "IterationRolloff", "Vibrant"]
+MODIFIERS = ["Haze", "IterationRolloff", "Kontrast", "Vibrant"]
 
 
 def add_nodes_to_menu():

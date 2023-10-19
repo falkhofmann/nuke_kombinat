@@ -59,12 +59,12 @@ Gizmo {
  BlinkScript {
   recompileCount 73
   ProgramGroup 1
-  KernelDescription "2 \"RadialGradienKernel\" iterate pixelWise 214d49f85d273a6aab165337d0075cb825372a1007dc2cddaa1eba3d9d7b9085 2 \"src\" Read Point \"dst\" Write Point 2 \"size\" Float 1 AACgQQ== \"offset\" Float 1 AAAAAA== 2 \"size\" 1 1 \"offset\" 1 1 0"
-  kernelSource "kernel RadialGradienKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float size;\n  float offset;\n\n  void define()\{\n  defineParam(size, \"size\", float(20));\n  defineParam(offset, \"offset\", float(0));\n\}\n  void process(int2 pos) \{\n    float line;\n    line = (sin((pos.x+offset)/size)+1)/2;\n\n    dst() = float4(line, 0.f, 0.f, 0.f);\n  \}\n\};\n"
+  KernelDescription "2 \"linesKernel\" iterate pixelWise 214d49f85d273a6aab165337d0075cb825372a1007dc2cddaa1eba3d9d7b9085 2 \"src\" Read Point \"dst\" Write Point 2 \"size\" Float 1 AACgQQ== \"offset\" Float 1 AAAAAA== 2 \"size\" 1 1 \"offset\" 1 1 0"
+  kernelSource "kernel linesKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float size;\n  float offset;\n\n  void define()\{\n  defineParam(size, \"size\", float(20));\n  defineParam(offset, \"offset\", float(0));\n\}\n  void process(int2 pos) \{\n    float line;\n    line = (sin((pos.x+offset)/size)+1)/2;\n\n    dst() = float4(line, 0.f, 0.f, 0.f);\n  \}\n\};\n"
   rebuild ""
   channels rgb
-  RadialGradienKernel_size {{parent.size}}
-  RadialGradienKernel_offset {{parent.offset}}
+  linesKernel_size {{parent.size}}
+  linesKernel_offset {{parent.offset}}
   rebuild_finalise ""
   name BlinkScript9
   xpos 444

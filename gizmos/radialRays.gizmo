@@ -17,11 +17,11 @@ Gizmo {
  addUserKnob {6 crop l "crop output" +STARTLINE}
  crop true
  addUserKnob {20 Info_tab l Info}
- addUserKnob {26 tool T <b>radialRays</b>}
- addUserKnob {26 version T <b>0.0.1</b>}
- addUserKnob {26 date T <b>10/2023</b>}
- addUserKnob {26 author T "<b>Falk Hofmann</b>"}
- addUserKnob {26 web T <b>www.kombinat-13b.de</b>}
+ addUserKnob {26 tool +STARTLINE T <b>radialRays</b>}
+ addUserKnob {26 version +STARTLINE T <b>0.0.1</b>}
+ addUserKnob {26 date +STARTLINE T <b>10/2023</b>}
+ addUserKnob {26 author +STARTLINE T "<b>Falk Hofmann</b>"}
+ addUserKnob {26 web +STARTLINE T <b>www.kombinat-13b.de</b>}
 }
  Constant {
   inputs 0
@@ -60,12 +60,12 @@ Gizmo {
  BlinkScript {
   recompileCount 71
   ProgramGroup 1
-  KernelDescription "3 \"RadialGradienKernel\" iterate pixelWise 0cd32020d12c55b6e9507d926391512755dd8852de39c8679ea1e7f7728ac033 2 \"src\" Read Point \"dst\" Write Point 2 \"center\" Float 2 AACARAAAgEQ= \"amount\" Float 1 AAD6Qw== 2 \"center\" 2 1 Default \"amount\" 1 1 Default 0"
-  kernelSource "kernel RadialGradienKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float2 center;\n  float amount;\n\n  void define()\{\n  defineParam(center, \"center\", float2(1024,1024));\n  defineParam(amount, \"amount\", float(500));\n\}\n  void process(int2 pos) \{\n    \n    int2 res;\n    res.x = src.bounds.x2;  \n    res.y = src.bounds.y2;\n\n    float rays;\n    rays = sin( atan2(pos.x - center.x, pos.y - center.y) * amount);\n\n    dst() = float4(rays, 0.f, 0.f, 0.f);\n  \}\n\};\n"
+  KernelDescription "3 \"RadialRaysKernel\" iterate pixelWise 0cd32020d12c55b6e9507d926391512755dd8852de39c8679ea1e7f7728ac033 2 \"src\" Read Point \"dst\" Write Point 2 \"center\" Float 2 AACARAAAgEQ= \"amount\" Float 1 AAD6Qw== 2 \"center\" 2 1 Default \"amount\" 1 1 Default 0"
+  kernelSource "kernel RadialRaysKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float2 center;\n  float amount;\n\n  void define()\{\n  defineParam(center, \"center\", float2(1024,1024));\n  defineParam(amount, \"amount\", float(500));\n\}\n  void process(int2 pos) \{\n    \n    int2 res;\n    res.x = src.bounds.x2;  \n    res.y = src.bounds.y2;\n\n    float rays;\n    rays = sin( atan2(pos.x - center.x, pos.y - center.y) * amount);\n\n    dst() = float4(rays, 0.f, 0.f, 0.f);\n  \}\n\};\n"
   rebuild ""
   channels rgb
-  RadialGradienKernel_center {{parent.Transform1.center} {parent.Transform1.center}}
-  RadialGradienKernel_amount 10
+  RadialRaysKernel_center {{parent.Transform1.center} {parent.Transform1.center}}
+  RadialRaysKernel_amount 10
   rebuild_finalise ""
   name BlinkScript9
   selected true
