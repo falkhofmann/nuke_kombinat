@@ -1,0 +1,103 @@
+#! /media/falk/data/Apps/nuke/Nuke14.1v1-Beta.3/libnuke-14.1.1.so -nx
+version 14.1 v1.119767b
+Gizmo {
+ inputs 0
+ tile_color 0xff5f00ff
+ note_font "DejaVu Sans"
+ addUserKnob {20 Mandelbrot}
+ addUserKnob {41 "Use GPU if Available" T "MandelbrotKernel.Use GPU if Available"}
+ addUserKnob {26 ""}
+ addUserKnob {41 format l "output format" T Reformat1.format}
+ addUserKnob {26 ""}
+ addUserKnob {41 recursion T MandelbrotKernel.recursion}
+ addUserKnob {26 ""}
+ addUserKnob {41 zoom T MandelbrotKernel.zoom}
+ addUserKnob {41 offset T MandelbrotKernel.offset}
+ addUserKnob {26 ""}
+ addUserKnob {41 color T MandelbrotKernel.color}
+ addUserKnob {26 ""}
+ addUserKnob {41 normalize T MandelbrotKernel.normalize}
+ addUserKnob {41 invert -STARTLINE T MandelbrotKernel.invert}
+ addUserKnob {20 Info_tab l Info}
+ addUserKnob {26 tool +STARTLINE T <b>Mandelbrot</b>}
+ addUserKnob {26 version +STARTLINE T <b>0.0.1</b>}
+ addUserKnob {26 date +STARTLINE T <b>10/2023</b>}
+ addUserKnob {26 author +STARTLINE T "<b>Falk Hofmann</b>"}
+ addUserKnob {26 web +STARTLINE T <b>www.kombinat-13b.de</b>}
+}
+ Constant {
+  inputs 0
+  channels rgb
+  name Constant1
+  xpos -168
+  ypos -171
+  postage_stamp false
+ }
+ Reformat {
+  format "1920 1080 0 0 1920 1080 1 HD_1080"
+  name Reformat1
+  xpos -168
+  ypos -147
+ }
+ Crop {
+  box {0 0 {width} {height}}
+  reformat true
+  crop false
+  name Crop1
+  xpos -168
+  ypos -111
+ }
+ Group {
+  name MandelbrotKernel
+  selected true
+  xpos -168
+  ypos -69
+  addUserKnob {20 MandelbrotKernel}
+  addUserKnob {41 "Local GPU: " T BlinkScript1.gpuName}
+  addUserKnob {41 "Use GPU if Available" T BlinkScript1.useGPUIfAvailable}
+  addUserKnob {26 ""}
+  addUserKnob {41 normalize T BlinkScript1.MandelbrotKernel_normalize}
+  addUserKnob {41 invert T BlinkScript1.MandelbrotKernel_invert}
+  addUserKnob {41 color T BlinkScript1.MandelbrotKernel_color}
+  addUserKnob {41 resolution T BlinkScript1.MandelbrotKernel_resolution}
+  addUserKnob {41 recursion T BlinkScript1.MandelbrotKernel_recursion}
+  addUserKnob {41 zoom T BlinkScript1.MandelbrotKernel_zoom}
+  addUserKnob {41 offset T BlinkScript1.MandelbrotKernel_offset}
+ }
+  Input {
+   inputs 0
+   name Input1
+   xpos -151
+   ypos -98
+  }
+  BlinkScript {
+   recompileCount 144
+   KernelDescription "3 \"MandelbrotKernel\" iterate pixelWise ae0de899f1ef1adef73068de4c6ce38035b2c90ca8ee9c4ec027d358af7b940b 2 \"src\" Read Point \"dst\" Write Point 7 \"normalize\" Bool 1 AA== \"invert\" Bool 1 AA== \"color\" Float 4 AAAAAAAAAAAAAAAAAAAAAA== \"resolution\" Int 2 AAAAAAAAAAA= \"recursion\" Int 1 AAAAAA== \"zoom\" Float 1 AAAAAA== \"offset\" Float 2 AAAAAAAAAAA= 7 \"normalize\" 1 1 Default \"invert\" 1 1 Default \"color\" 4 1 Default \"resolution\" 2 1 Default \"recursion\" 1 1 Default \"zoom\" 1 1 Default \"offset\" 2 1 Default 6 \"width\" Int 1 1 AAAAAA== \"height\" Int 1 1 AAAAAA== \"minR\" Float 1 1 AAAAAA== \"maxR\" Float 1 1 AAAAAA== \"minI\" Float 1 1 AAAAAA== \"maxI\" Float 1 1 AAAAAA=="
+   EncodedSource "1 1510 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"
+   rebuild ""
+   channels rgb
+   MandelbrotKernel_normalize true
+   MandelbrotKernel_color {0.8053333163 0.05533333495 -0.1946666837 0}
+   MandelbrotKernel_resolution {{width} {height}}
+   MandelbrotKernel_recursion 500
+   MandelbrotKernel_zoom 1
+   protectKernelWhenPublishing true
+   format {{{parent.format}}}
+   rebuild_finalise ""
+   name BlinkScript1
+   selected true
+   xpos -151
+   ypos -58
+  }
+  Output {
+   name Output1
+   xpos -151
+   ypos 42
+  }
+ end_group
+ Output {
+  name Output1
+  xpos -168
+  ypos -3
+ }
+end_group
