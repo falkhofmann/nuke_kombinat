@@ -3,7 +3,7 @@ version 14.1 v1.119767b
 Gizmo {
  inputs 0
  tile_color 0x4ee1dbff
- addUserKnob {20 User l "radial Rays"}
+ addUserKnob {20 User l "RadialRays"}
  addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T BlinkScript9.useGPUIfAvailable}
  addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T BlinkScript9.vectorize}
  addUserKnob {26 "" +STARTLINE}
@@ -17,7 +17,7 @@ Gizmo {
  addUserKnob {6 crop l "crop output" +STARTLINE}
  crop true
  addUserKnob {20 Info_tab l Info}
- addUserKnob {26 tool +STARTLINE T <b>radialRays</b>}
+ addUserKnob {26 tool +STARTLINE T <b>RadialRays</b>}
  addUserKnob {26 version +STARTLINE T <b>0.0.1</b>}
  addUserKnob {26 date +STARTLINE T <b>10/2023</b>}
  addUserKnob {26 author +STARTLINE T "<b>Falk Hofmann</b>"}

@@ -3,20 +3,19 @@ version 14.1 v1.119767b
 Gizmo {
  inputs 0
  tile_color 0x4ee1dbff
- addUserKnob {20 User l lines}
+ addUserKnob {20 User l RadialGradient}
  addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T BlinkScript9.useGPUIfAvailable}
  addUserKnob {41 vectorize l "Vectorize on CPU" -STARTLINE T BlinkScript9.vectorize}
- addUserKnob {26 ""}
- addUserKnob {7 size R 1 50}
- size 10
- addUserKnob {7 offset R -100 100}
+ addUserKnob {26 "" +STARTLINE}
+ addUserKnob {12 center}
+ center {1024 1024}
  addUserKnob {7 rotation R -180 180}
  addUserKnob {26 ""}
  addUserKnob {41 format l "output format" T _format.format}
- addUserKnob {6 crop +STARTLINE}
+ addUserKnob {6 crop l "crop output" +STARTLINE}
  crop true
  addUserKnob {20 Info_tab l Info}
- addUserKnob {26 tool +STARTLINE T <b>lines</b>}
+ addUserKnob {26 tool +STARTLINE T <b>RadialGradient</b>}
  addUserKnob {26 version +STARTLINE T <b>0.0.1</b>}
  addUserKnob {26 date +STARTLINE T <b>10/2023</b>}
  addUserKnob {26 author +STARTLINE T "<b>Falk Hofmann</b>"}
@@ -44,11 +43,11 @@ Gizmo {
  }
  Transform {
   rotate {{parent.rotation}}
-  center {{width/2} {height/2}}
+  center {{parent.center} {parent.center}}
   shutteroffset centred
   name Transform1
   xpos 444
-  ypos 655
+  ypos 659
  }
  Crop {
   box {{bbox.x} {bbox.y} {bbox.r} {bbox.t}}
@@ -57,18 +56,17 @@ Gizmo {
   ypos 704
  }
  BlinkScript {
-  recompileCount 73
+  recompileCount 67
   ProgramGroup 1
-  KernelDescription "2 \"linesKernel\" iterate pixelWise 214d49f85d273a6aab165337d0075cb825372a1007dc2cddaa1eba3d9d7b9085 2 \"src\" Read Point \"dst\" Write Point 2 \"size\" Float 1 AACgQQ== \"offset\" Float 1 AAAAAA== 2 \"size\" 1 1 \"offset\" 1 1 0"
-  kernelSource "kernel linesKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float size;\n  float offset;\n\n  void define()\{\n  defineParam(size, \"size\", float(20));\n  defineParam(offset, \"offset\", float(0));\n\}\n  void process(int2 pos) \{\n    float line;\n    line = (sin((pos.x+offset)/size)+1)/2;\n\n    dst() = float4(line, 0.f, 0.f, 0.f);\n  \}\n\};\n"
+  KernelDescription "2 \"RadialGradientKernel\" iterate pixelWise 08db1ea5eceb6d4e45fa576fe09188d618934bbe04d7e14b000479be96a41b09 2 \"src\" Read Point \"dst\" Write Point 1 \"center\" Float 2 AAD6QwAA+kM= 1 \"center\" 2 1 0"
+  kernelSource "kernel RadialGradientKernel : ImageComputationKernel<ePixelWise>\n\{\n  Image<eRead, eAccessPoint, eEdgeClamped> src;\n  Image<eWrite> dst;\n\nparam:\n  float2 center;\n  void define()\{\n  defineParam(center, \"center\", float2(500,500));\n\}\n  void process(int2 pos) \{\n    \n    int2 res;\n    res.x = src.bounds.x2;  \n    res.y = src.bounds.y2;\n\n    float4 hans;\n    hans.x = 0.5+(atan2(pos.x-center.x, pos.y-center.y)/(PI*2));\n\n    dst() = float4(hans.x, 0.f, 0.f, 0.f);\n  \}\n\};\n"
   rebuild ""
   channels rgb
-  linesKernel_size {{parent.size}}
-  linesKernel_offset {{parent.offset}}
+  RadialGradientKernel_center {{parent.Transform1.center} {parent.Transform1.center}}
   rebuild_finalise ""
   name BlinkScript9
   xpos 444
-  ypos 740
+  ypos 739
  }
  Transform {
   rotate {{parent.Transform1.rotate}}
@@ -76,17 +74,14 @@ Gizmo {
   invert_matrix true
   shutteroffset centred
   name Transform2
-  selected true
   xpos 444
   ypos 785
  }
  Crop {
-  box {0 0 {_format.width} {_format.height}}
-  reformat true
-  crop false
+  box {{0} {0} {_format.width} {_format.height}}
   name Crop5
   xpos 444
-  ypos 821
+  ypos 820
   disable {{!parent.crop}}
  }
  Output {
