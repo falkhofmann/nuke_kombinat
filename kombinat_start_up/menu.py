@@ -10,7 +10,7 @@ from kombinat_start_up.kombinat_settings import (
     MODIFIERS,
 )
 from kombinat_tools import channel_toggler
-from kombinat_utils import node_utils
+from kombinat_utils import node_utils, viewer_utils
 
 
 def add_nodes_to_menu():
@@ -32,12 +32,25 @@ def add_tools_to_menu():
         icon = "godzilla.png" if menu == "Nodes" else None
         sub_menu = nuke.menu(menu).addMenu(KOMBINAT_TOOL_MENU_NAME, icon)
         nodegraph = sub_menu.addMenu("nodegraph")
+        viewer = sub_menu.addMenu("viewer")
         nodegraph.addCommand("clear animation", node_utils.clear_animation)
         nodegraph.addCommand("cornerpint ref frame", node_utils.cornerpin_ref_frame)
-        nodegraph.addCommand("delete all viewer", node_utils.delete_all_viewer)
+        nodegraph.addCommand("delete all viewer nodes", node_utils.delete_all_viewer)
         nodegraph.addCommand("toggle channels", channel_toggler.toggle_channel, "q")
         nodegraph.addCommand(
             "turn off postage stamps", node_utils.turn_postage_stamps_off
+        )
+        viewer.addCommand(
+            "cycle LUT up",
+            "viewer_utils.cycle_lut_menu(-1)",
+            "shift+up",
+            shortcutContext=1,
+        )
+        viewer.addCommand(
+            "cycle LUT down",
+            "viewer_utils.cycle_lut_menu(1)",
+            "shift+down",
+            shortcutContext=1,
         )
 
 
