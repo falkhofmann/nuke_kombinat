@@ -32,4 +32,4 @@ Further more there are utility modules for the nodegraph as well as for the view
 My current plan is to cmobine [other public repositories](https://github.com/falkhofmann?tab=repositories) of mine into this repository and to have a unified place to provide those as well as already integreated into menus etc.
 
 # Feedback
-Since I am always looking for feedback, please feel free to write an issue here, on what can be improved or contact me in any other way. 
+Since I am always looking for feedback, please feel free to write an issue here, on what can be improved or contact me in any [other way](https://www.linkedin.com/in/falkhofmann/). 
