@@ -19,3 +19,19 @@ def find_view_menu_object(qtObject, tooltip_starts_with):
                 return children
         except:
             pass
+
+
+def cycle_lut_menu(direction=1):
+
+    viewer = nuke.activeViewer().node()["viewerProcess"]
+    values = viewer.values()
+    current = values.index(viewer.value())
+    update = current + direction
+    last = len(values) - 1
+
+    if update <= last and update > 0:
+        viewer.setValue(update)
+    elif update == -1:
+        viewer.setValue(last)
+    else:
+        viewer.setValue(0)
