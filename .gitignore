@@ -1,5 +1,6 @@
 .nuketools
 .vscode
 dev_files
+kombinat_start_up/__pycache__
 kombinat_tools/__pycache__
 kombinat_utils/__pycache__

@@ -1,9 +1,7 @@
 import nuke
-import nukescripts
 
 
 def clear_animation():
-
     for node in nuke.selectedNodes():
         for knob in node.knobs():
             if nuke.Knob.isAnimated(node[knob]):
@@ -25,11 +23,6 @@ def cornerpin_ref_frame():
             node[f"from{idx}"].setExpression(f"to{idx}(ref_frame)")
 
 
-def declone_selected():
-    for node in nuke.selectedNodes():
-        nukescripts.declone(node)
-
-
 def delete_all_viewer():
     for node in nuke.allNodes(recurseGroups=True):
         if node.Class() == "Viewer":
@@ -37,7 +30,6 @@ def delete_all_viewer():
 
 
 def turn_postage_stamps_off():
-
     for node in nuke.allNodes(recurseGroups=True):
         if "postage_stamp" in node.knobs():
             node["postage_stamp"].setValue(False)
