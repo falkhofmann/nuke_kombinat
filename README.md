@@ -3,6 +3,7 @@
 # General
 This repository aims to grow and develop over time.
 At the time writing (02/2024) this shall give a solid foundation to setup Nuke with menus and knob defaults. As example where to hook up tools and gizmos, I placed some of each as examples into this repository.
+The [wiki](https://github.com/falkhofmann/nuke_kombinat/wiki) shall be udpated also soon with each individual tool and gizmos.
 
 # Start up
 the entire start up process with menus, paths and knob defaults are placed under [start_up](./kombinat_start_up/) to keep the toplevel clean.
