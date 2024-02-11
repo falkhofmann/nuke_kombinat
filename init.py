@@ -1,4 +1,11 @@
 import nuke
 
-nuke.pluginAddPath("./icons")
-nuke.pluginAddPath("./gizmos")
+
+def extend_plugin_path():
+    paths = ["./icons", "./gizmos"]
+
+    for path in paths:
+        nuke.pluginAddPath(path)
+
+
+extend_plugin_path()
