@@ -1,1 +1,3 @@
-dev_files/
+dev_files/*
+.nuketools/*
+kombinat_utils/__pycache__/
