@@ -1,4 +1,5 @@
-.nuketools/*
-.vscode/
-dev_files/*
-kombinat_utils/__pycache__/
+.nuketools
+.vscode
+dev_files
+kombinat_tools/__pycache__
+kombinat_utils/__pycache__
