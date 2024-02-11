@@ -1,3 +1,4 @@
-dev_files/*
 .nuketools/*
+.vscode/
+dev_files/*
 kombinat_utils/__pycache__/
